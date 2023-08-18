@@ -1,2 +1,9 @@
 # CSE423
-In this file all of the lab solution is here. Summer-2023
+In this file CSE423 (Computer Graphics) lab project.
+
+To run this, your local environment should install
+pip install pyOpenG
+pip install numpy
+pip install glut
+
+
