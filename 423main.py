@@ -124,6 +124,7 @@ def MidPointcircle(center_x, center_y, radius):
         circlepoints(center_x, center_y, x, y)
 
 
+#scalling function
 def scaling(x1, y1, x2, y2, sc=0):
     v1 = np.array([[x1], [y1], [1]])
     v2 = np.array([[x2], [y2], [1]])
@@ -150,9 +151,6 @@ def drawCar(x, y):
     for i in range(35):
         glColor3f(1, 0, 0)
         MidPointLine(x, y+i, x + 80, y+i)
-    # MidPointLine(x, y + 30, x + 80, y + 30)
-    # MidPointLine(x, y, x, y + 30)
-    # MidPointLine(x + 80, y, x + 80, y + 30)
 
     # Wheels
     MidPointcircle(x + 20, y - 10, 10)
@@ -171,7 +169,7 @@ def timer(value):
     global id
     if id in ['1', '2', '3']:
         driveToBuilding(id)
-    glutPostRedisplay()  # Trigger a window redisplay
+    glutPostRedisplay()  
     glutTimerFunc(1000//60, timer, 0)  # 60 FPS
 
 
@@ -263,7 +261,7 @@ def buildings():
 
 
 
-#FLAME IN THE BUILDING
+#agun dhorar funtion
 def flame(pixel):
     glColor3f(1.0, 0, 0.0) #red color
     if pixel == 250:
@@ -289,7 +287,7 @@ def iterate():
 
 
 global id
-id = input('Input Building Number: ')
+id = input('Enter Building Number: ')
 
 
 def showScreen():
@@ -297,9 +295,11 @@ def showScreen():
     glLoadIdentity()
     iterate()
     glColor3f(1.0, 0, 0)
+
+    #function call hocche
     buildings()
-# Call the function to move the car based on user input
     driveToBuilding(id)
+
     glutSwapBuffers()
 
 
@@ -311,7 +311,7 @@ glutInitWindowSize(1000, 1000)
 glutInitWindowPosition(0, 0)
 wind = glutCreateWindow(b"Project Using Midpoint")
 glutDisplayFunc(showScreen)
-glutTimerFunc(0, timer, 0)  # First timer call immediately
+glutTimerFunc(0, timer, 0)  
 init()
 glutMainLoop()
 
