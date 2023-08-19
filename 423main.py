@@ -3,6 +3,7 @@ from OpenGL.GLUT import *
 import numpy as np
 import random
 import time
+import math
 
 
 def draw_points(x, y):
@@ -124,7 +125,6 @@ def MidPointcircle(center_x, center_y, radius):
         circlepoints(center_x, center_y, x, y)
 
 
-#scalling function
 def scaling(x1, y1, x2, y2, sc=0):
     v1 = np.array([[x1], [y1], [1]])
     v2 = np.array([[x2], [y2], [1]])
@@ -145,6 +145,30 @@ def scaling(x1, y1, x2, y2, sc=0):
 
 
 
+def rotation(x1,y1,x2,y2,dg=0):
+    v1 = np.array([[x1], [y1], [1]])
+    v2 = np.array([[x2], [y2], [1]])
+
+    a = math.cos(math.radians(dg))
+    b = math.sin(math.radians(dg))
+
+    r = np.array([[a, -b, 0],
+                  [b, a, 0],    #routating
+                  [0, 0, 1]])
+
+    t1 = np.array([[1, 0, -v1[0][0]],
+                   [0, 1, -v1[1][0]],  # origin
+                   [0, 0, 1]])
+
+    # rotation
+    v11 = np.matmul(r, np.matmul(t1, v1))
+    v22 = np.matmul(r, np.matmul(t1, v2))
+
+    return (v11[0][0], v11[1][0], v22[0][0], v22[1][0])
+
+
+
+
 def drawCar(x, y):
     # Car body
     MidPointLine(x, y, x + 80, y)
@@ -156,36 +180,69 @@ def drawCar(x, y):
     MidPointcircle(x + 20, y - 10, 10)
     MidPointcircle(x + 60, y - 10, 10)
 
+
 def init():
     glClearColor(0.0, 0.0, 0.0, 1.0)  # Set background color to black
     glEnable(GL_DEPTH_TEST)
 
-def sprayWater(x, y, targetX, targetY):
+def sprayWater(dg):
     glColor3f(0, 1, 0.95)
-    for i in range(5, 20):
-        MidPointLine(x + 40, y + 30 + i, targetX+i, targetY)
+    # for i in range(5, 20):
+    #     MidPointLine(x + 40, y + 30 + i, targetX+i, targetY)
+
+
+    #ROTATION FUNCTION USE KORE SPRAY WATER ER DGREE CHANGE KORA HOISE
+    #FOR 1 NUMBER BUILDING SPRAY WATER
+    if dg == 40:
+        r_x1, r_y1, r_x2, r_y2 = rotation(350, 50, 350, 320, 40)
+        MidPointLine(r_x1 + 350, r_y1 + 50, r_x2 + 290, r_y2 + 120)
+
+    #FOR 2 NUMBER BUILDING SPRAY WATER
+    elif dg == -40:
+        r_x1, r_y1, r_x2, r_y2 = rotation(350, 50, 350, 320, -40)
+        MidPointLine(r_x1 + 350, r_y1 + 50, r_x2 + 240, r_y2 + 180)
+
+    #FOR 3 NUMBER BUILDING SPRAY WATER
+    elif dg == -85:
+        r_x1, r_y1, r_x2, r_y2 = rotation(350, 50, 350, 320, -85)
+        MidPointLine(r_x1 + 350, r_y1 + 50, r_x2 + 290, r_y2 + 360)
+
+
 
 def timer(value):
     global id
     if id in ['1', '2', '3']:
         driveToBuilding(id)
-    glutPostRedisplay()  
+    glutPostRedisplay()  # Trigger a window redisplay
     glutTimerFunc(1000//60, timer, 0)  # 60 FPS
 
 
 
 def driveToBuilding(building_number):
+    # if building_number == '1':
+    #     drawCar(100, 50)
+    #     sprayWater(100, 50, 100, 300)
+    #     flame(250)
+    # elif building_number == '2':
+    #     drawCar(350, 50)
+    #     sprayWater(350, 50, 350, 320)
+    #     flame(500)
+    # elif building_number == '3':
+    #     drawCar(600, 50)
+    #     sprayWater(600, 50, 600, 380)
+    #     flame(700)
+
     if building_number == '1':
-        drawCar(100, 50)
-        sprayWater(100, 50, 100, 300)
+        drawCar(350, 50)
+        sprayWater(40)
         flame(250)
     elif building_number == '2':
         drawCar(350, 50)
-        sprayWater(350, 50, 350, 320)
+        sprayWater(-40)
         flame(500)
     elif building_number == '3':
-        drawCar(600, 50)
-        sprayWater(600, 50, 600, 380)
+        drawCar(350, 50)
+        sprayWater(-85)
         flame(700)
 
 
@@ -195,7 +252,7 @@ def driveToBuilding(building_number):
 def buildings():
     glColor3f(1.0, 1.0, 1.0)
     # road
-    MidPointLine(0, 70, 250 + 520 , 337 + 85)
+    MidPointLine(0, 70, 250 + 520, 337 + 85)
 
     # building -1
     MidPointLine(90, 115, 90, 360)
@@ -261,7 +318,7 @@ def buildings():
 
 
 
-#agun dhorar funtion
+#FLAME IN THE BUILDING
 def flame(pixel):
     glColor3f(1.0, 0, 0.0) #red color
     if pixel == 250:
@@ -287,7 +344,7 @@ def iterate():
 
 
 global id
-id = input('Enter Building Number: ')
+id = input('Input Building Number: ')
 
 
 def showScreen():
@@ -295,11 +352,9 @@ def showScreen():
     glLoadIdentity()
     iterate()
     glColor3f(1.0, 0, 0)
-
-    #function call hocche
     buildings()
+# Call the function to move the car based on user input
     driveToBuilding(id)
-
     glutSwapBuffers()
 
 
@@ -311,7 +366,7 @@ glutInitWindowSize(1000, 1000)
 glutInitWindowPosition(0, 0)
 wind = glutCreateWindow(b"Project Using Midpoint")
 glutDisplayFunc(showScreen)
-glutTimerFunc(0, timer, 0)  
+glutTimerFunc(0, timer, 0)
 init()
 glutMainLoop()
 
